@@ -12,6 +12,8 @@ from init_env import WHITE_LIST_USERS
 import pdb
 import sys
 import xmpp
+import json
+import urllib2
 
 from get_ip import get_ip
 
@@ -32,7 +34,10 @@ commands['help'] = helpHandler
 i18n['en']['EMPTY'] = "%s"
 i18n['en']['HOOK1'] = 'Responce 1: %s'
 def nowHandler(user, command, args, msg):
-    return "NOW", 'You requested: %s'%args
+    j = urllib2.urlopen('http://api.open-notify.org/iss-now/')
+    j_obj = json.load(j)
+    answer = j_obj['timestamp']
+    return "NOW", 'Timestamp: %s'%answer
 commands['now'] = nowHandler
 
 i18n['en']['HOOK2'] = 'Responce 2: %s'

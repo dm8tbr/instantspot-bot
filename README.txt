@@ -3,8 +3,11 @@
 This package published under GNU Lesser General Public License.
 
 == REQUIREMENT ==
- - [http://xmpppy.sourceforge.net/ xmpppy]
  - >= Python 2.6
+ - python libraries
+  - [http://xmpppy.sourceforge.net/ xmpppy]
+  - urllib2
+  - json
 
 OS X
     sudo port install python-xmpp
