@@ -13,13 +13,13 @@ import pdb
 import sys
 import xmpp
 import json
+import urllib
 import urllib2
 
 from get_ip import get_ip
 
 commands = {}
 i18n = {
-    'zh_CN': {},
     'en': {}
     }
 ########################### user handlers start ##################################
@@ -32,7 +32,7 @@ def helpHandler(user, command, args, msg):
 commands['help'] = helpHandler
 
 i18n['en']['EMPTY'] = "%s"
-i18n['en']['HOOK1'] = 'Responce 1: %s'
+i18n['en']['NOW'] = '%s'
 def nowHandler(user, command, args, msg):
     j = urllib2.urlopen('http://api.open-notify.org/iss-now/')
     j_obj = json.load(j)
@@ -40,10 +40,17 @@ def nowHandler(user, command, args, msg):
     return "NOW", '%s'%answer
 commands['now'] = nowHandler
 
-i18n['en']['HOOK2'] = 'Responce 2: %s'
-def hook2Handler(user, command, args, msg):
-    return "HOOK2", "hook2 called with %s"%(`(user, command, args, msg)`)
-commands['hook2'] = hook2Handler
+i18n['en']['WHEN'] = '%s'
+def whenHandler(user, command, args, msg):
+    # http://nominatim.openstreetmap.org/search?q=135+pilkington+avenue,+birmingham&format=json&polygon=0&addressdetails=1&limit=1&email=instantspot@ruecker.fi
+        
+    url = 'http://nominatim.openstreetmap.org/search?q='+urllib.quote_plus(str(args))+'&format=json&polygon=0&addressdetails=1&limit=1&email=instantspot@ruecker.fi'
+    j = urllib2.urlopen(url)
+    j_obj = json.load(j)
+    #answer = 'Location request result (via OpenStreetMap and Nominatim): Latitude: '+str(j_obj['lat'])+' Longitude: '+str(j_obj['lon'])+' for: '+str(j_obj['display_name'])
+    answer = str(url)
+    return "WHEN", "%s"%answer
+commands['when'] = whenHandler
 
 i18n['en']['HOOK3'] = 'Responce 3: static string'
 def hook3Handler(user, command, args, msg):
