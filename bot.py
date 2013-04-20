@@ -37,18 +37,17 @@ def nowHandler(user, command, args, msg):
     j = urllib2.urlopen('http://api.open-notify.org/iss-now/')
     j_obj = json.load(j)
     answer = 'Longitude: '+str(j_obj['iss_position']['latitude'])+' Latitude: '+str(j_obj['iss_position']['longitude'])
+#    answer = j_obj
     return "NOW", '%s'%answer
 commands['now'] = nowHandler
 
 i18n['en']['WHEN'] = '%s'
 def whenHandler(user, command, args, msg):
     # http://nominatim.openstreetmap.org/search?q=135+pilkington+avenue,+birmingham&format=json&polygon=0&addressdetails=1&limit=1&email=instantspot@ruecker.fi
-        
     url = 'http://nominatim.openstreetmap.org/search?q='+urllib.quote_plus(str(args))+'&format=json&polygon=0&addressdetails=1&limit=1&email=instantspot@ruecker.fi'
     j = urllib2.urlopen(url)
     j_obj = json.load(j)
-    #answer = 'Location request result (via OpenStreetMap and Nominatim): Latitude: '+str(j_obj['lat'])+' Longitude: '+str(j_obj['lon'])+' for: '+str(j_obj['display_name'])
-    answer = str(url)
+    answer = 'Location request result (via OpenStreetMap and Nominatim): Latitude: '+str(j_obj[0]['lat'])+' Longitude: '+str(j_obj[0]['lon'])+' for: '+str(j_obj[0]['display_name'])
     return "WHEN", "%s"%answer
 commands['when'] = whenHandler
 
