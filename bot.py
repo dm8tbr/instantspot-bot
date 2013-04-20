@@ -21,7 +21,7 @@ i18n = {
     'en': {}
     }
 ########################### user handlers start ##################################
-i18n['en']['HELP'] = "This is example jabber bot.\nAvailable commands: %s"
+i18n['en']['HELP'] = "This is instantspot bot.\nAvailable commands: %s"
 
 def helpHandler(user, command, args, msg):
     lst = commands.keys()
@@ -31,9 +31,9 @@ commands['help'] = helpHandler
 
 i18n['en']['EMPTY'] = "%s"
 i18n['en']['HOOK1'] = 'Responce 1: %s'
-def hook1Handler(user, command, args, msg):
-    return "HOOK1", 'You requested: %s'%args
-commands['hook1'] = hook1Handler
+def nowHandler(user, command, args, msg):
+    return "NOW", 'You requested: %s'%args
+commands['now'] = nowHandler
 
 i18n['en']['HOOK2'] = 'Responce 2: %s'
 def hook2Handler(user, command, args, msg):
