@@ -47,7 +47,17 @@ def whenHandler(user, command, args, msg):
     url = 'http://nominatim.openstreetmap.org/search?q='+urllib.quote_plus(str(args))+'&format=json&polygon=0&addressdetails=1&limit=1&email=instantspot@ruecker.fi'
     j = urllib2.urlopen(url)
     j_obj = json.load(j)
-    answer = 'Location request result (via OpenStreetMap and Nominatim): Latitude: '+str(j_obj[0]['lat'])+' Longitude: '+str(j_obj[0]['lon'])+' for: '+str(j_obj[0]['display_name'])
+    #answer = 'Location request result (via OpenStreetMap and Nominatim): Latitude: '+str(j_obj[0]['lat'])+' Longitude: '+str(j_obj[0]['lon'])+' for: '+j_obj[0]['display_name']
+    passurl = 'http://api.open-notify.org/iss/?n=3&lat='+str(j_obj[0]['lat'])+'&lon='+str(j_obj[0]['lon'])
+    #+'alt=
+    passdata = urllib2.urlopen(passurl)
+    pass_obj = json.load(passdata)
+    #check for success here!
+    answer = 'Next 3 passes of the ISS for:\n'+'location_display_name'
+    answer = answer+'\n1: '+str(pass_obj['response'][0]['risetime'])+' for: '+str(pass_obj['response'][0]['duration'])
+    print('foo')
+    answer = answer+'\n2: '+str(pass_obj['response'][1]['risetime'])+' for: '+str(pass_obj['response'][1]['duration'])
+    answer = answer+'\n3: '+str(pass_obj['response'][2]['risetime'])+' for: '+str(pass_obj['response'][2]['duration'])
     return "WHEN", "%s"%answer
 commands['when'] = whenHandler
 
