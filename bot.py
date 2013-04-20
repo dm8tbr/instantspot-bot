@@ -36,8 +36,8 @@ i18n['en']['HOOK1'] = 'Responce 1: %s'
 def nowHandler(user, command, args, msg):
     j = urllib2.urlopen('http://api.open-notify.org/iss-now/')
     j_obj = json.load(j)
-    answer = j_obj['timestamp']
-    return "NOW", 'Timestamp: %s'%answer
+    answer = 'Longitude: '+str(j_obj['iss_position']['latitude'])+' Latitude: '+str(j_obj['iss_position']['longitude'])
+    return "NOW", '%s'%answer
 commands['now'] = nowHandler
 
 i18n['en']['HOOK2'] = 'Responce 2: %s'
