@@ -66,26 +66,27 @@ def message_callback(conn, msg):
     text = msg.getBody()
     user = msg.getFrom()
     user.lang = 'en'      # dup
-    if text.find(' ')+1: command, args = text.split(' ', 1)
-    else: command, args = text, ''
-    cmd = command.lower()
+    if text is not None:
+        if text.find(' ')+1: command, args = text.split(' ', 1)
+        else: command, args = text, ''
+        cmd = command.lower()
 
-    if commands.has_key(cmd): reply = commands[cmd](user, command, args, msg)
-    else: reply = ("UNKNOWN COMMAND", cmd)
+        if commands.has_key(cmd): reply = commands[cmd](user, command, args, msg)
+        else: reply = ("UNKNOWN COMMAND", cmd)
 
-    if type(reply) == type(()):
-        key, args = reply
-        if i18n[user.lang].has_key(key): pat = i18n[user.lang][key]
-        elif i18n['en'].has_key(key): pat = i18n['en'][key]
-        else: pat = "%s"
-        if type(pat) == type(''): reply = pat%args
-        else: reply = pat(**args)
-    else:
-        try: reply = i18n[user.lang][reply]
-        except KeyError:
-            try: reply = i18n['en'][reply]
-            except KeyError: pass
-    if reply: conn.send(xmpp.Message(msg.getFrom(), reply))
+        if type(reply) == type(()):
+            key, args = reply
+            if i18n[user.lang].has_key(key): pat = i18n[user.lang][key]
+            elif i18n['en'].has_key(key): pat = i18n['en'][key]
+            else: pat = "%s"
+            if type(pat) == type(''): reply = pat%args
+            else: reply = pat(**args)
+        else:
+            try: reply = i18n[user.lang][reply]
+            except KeyError:
+                try: reply = i18n['en'][reply]
+                except KeyError: pass
+        if reply: conn.send(xmpp.Message(msg.getFrom(), reply))
 
 ############################# bot logic stop #####################################
 
