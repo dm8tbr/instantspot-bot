@@ -96,9 +96,15 @@ def message_callback(conn, msg):
         if text.find(' ')+1: command, args = text.split(' ', 1)
         else: command, args = text, ''
         cmd = command.lower()
+	
+	#for debugging, print all input
+	print(text)
 
         if commands.has_key(cmd): reply = commands[cmd](user, command, args, msg)
         else: reply = ("UNKNOWN COMMAND", cmd)
+
+	#for debugging, print all reply objects
+	print(reply)
 
         if type(reply) == type(()):
             key, args = reply
