@@ -15,6 +15,7 @@ import xmpp
 import json
 import urllib
 import urllib2
+import time
 
 from get_ip import get_ip
 
@@ -53,11 +54,11 @@ def whenHandler(user, command, args, msg):
     passdata = urllib2.urlopen(passurl)
     pass_obj = json.load(passdata)
     #check for success here!
+    time_format = "%Y-%m-%dT%H:%M:%S%z"
     answer = 'Next 3 passes of the ISS for:\n'+'location_display_name'
-    answer = answer+'\n1: '+str(pass_obj['response'][0]['risetime'])+' for: '+str(pass_obj['response'][0]['duration'])
-    print('foo')
-    answer = answer+'\n2: '+str(pass_obj['response'][1]['risetime'])+' for: '+str(pass_obj['response'][1]['duration'])
-    answer = answer+'\n3: '+str(pass_obj['response'][2]['risetime'])+' for: '+str(pass_obj['response'][2]['duration'])
+    answer = answer+'\n1: '+time.strftime(time_format,time.gmtime(pass_obj['response'][0]['risetime']))+' for: '+str(pass_obj['response'][0]['duration'])+'s'
+    answer = answer+'\n2: '+time.strftime(time_format,time.gmtime(pass_obj['response'][1]['risetime']))+' for: '+str(pass_obj['response'][1]['duration'])+'s'
+    answer = answer+'\n3: '+time.strftime(time_format,time.gmtime(pass_obj['response'][2]['risetime']))+' for: '+str(pass_obj['response'][2]['duration'])+'s'
     return "WHEN", "%s"%answer
 commands['when'] = whenHandler
 
