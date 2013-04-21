@@ -69,6 +69,9 @@ commands['when'] = whenHandler
 
 i18n['en']['SMS'] = '%s'
 def smsHandler(user, command, args, msg):
+    args, smsreceiver = args.split('|', 1)
+    print('smsreceiver: '+smsreceiver)
+    print('args: '+args)
     # http://nominatim.openstreetmap.org/search?q=135+pilkington+avenue,+birmingham&format=json&polygon=0&addressdetails=1&limit=1&email=instantspot@ruecker.fi
     url = 'http://nominatim.openstreetmap.org/search?q='+urllib.quote_plus(str(args))+'&format=json&polygon=0&addressdetails=1&limit=1&email=instantspot@ruecker.fi'
     j = urllib2.urlopen(url)
@@ -84,11 +87,12 @@ def smsHandler(user, command, args, msg):
     answer = answer+';'+time.strftime(time_format,time.gmtime(pass_obj['response'][0]['risetime']))+';for:'+str(pass_obj['response'][0]['duration'])+'s'
     print(answer.encode('ascii', 'ignore'))
     #https://www.voipdiscount.com/myaccount/sendsms.php?username=xxxxxxxxxx&password=xxxxxxxxxx&from=xxxxxxxxxx&to=xxxxxxxxxx&text=xxxxxxxxxx
-    answerurl = 'https://www.voipdiscount.com/myaccount/sendsms.php?username='+SMSUSERNAME+'&password='+SMSPASSWORD+'&from='+SMSSENDER+'&to='+'+358401620548'+'&text='+urllib.quote(answer.encode('ascii', 'ignore'))
+    answerurl = 'https://www.voipdiscount.com/myaccount/sendsms.php?username='+SMSUSERNAME+'&password='+SMSPASSWORD+'&from='+SMSSENDER+'&to='+smsreceiver+'&text='+urllib.quote(answer.encode('ascii', 'ignore'))
+    #FIXME temporarily disabled SMS sending
     sms_result = urllib2.urlopen(answerurl)
     print(answerurl)
-    print(sms_result)
-    return "SMS", sms_result
+    #print(sms_result)
+    return "SMS", answerurl
 commands['sms'] = smsHandler
 
 def get_ip_hook(user, command, args, msg):
