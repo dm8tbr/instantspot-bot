@@ -55,7 +55,7 @@ def whenHandler(user, command, args, msg):
     pass_obj = json.load(passdata)
     #check for success here!
     time_format = "%Y-%m-%dT%H:%M:%S%z"
-    answer = 'Next 3 passes of the ISS for:\n'+'location_display_name'
+    answer = 'Next 3 passes of the ISS for:\n'+j_obj[0]['display_name']
     answer = answer+'\n1: '+time.strftime(time_format,time.gmtime(pass_obj['response'][0]['risetime']))+' for: '+str(pass_obj['response'][0]['duration'])+'s'
     answer = answer+'\n2: '+time.strftime(time_format,time.gmtime(pass_obj['response'][1]['risetime']))+' for: '+str(pass_obj['response'][1]['duration'])+'s'
     answer = answer+'\n3: '+time.strftime(time_format,time.gmtime(pass_obj['response'][2]['risetime']))+' for: '+str(pass_obj['response'][2]['duration'])+'s'
