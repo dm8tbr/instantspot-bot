@@ -37,7 +37,11 @@ i18n['en']['NOW'] = '%s'
 def nowHandler(user, command, args, msg):
     j = urllib2.urlopen('http://api.open-notify.org/iss-now/')
     j_obj = json.load(j)
-    answer = 'Longitude: '+str(j_obj['iss_position']['latitude'])+' Latitude: '+str(j_obj['iss_position']['longitude'])
+    #http://nominatim.openstreetmap.org/reverse?format=xml&lat=60&lon=42&email=instantspot@ruecker.fi
+    rposurl = 'http://nominatim.openstreetmap.org/reverse?format=json&lat='+urllib.quote_plus(str(j_obj['iss_position']['latitude']))+'&lon='+urllib.quote_plus(str(j_obj['iss_position']['longitude']))+'&email=instantspot@ruecker.fi'
+    rpos = urllib2.urlopen(rposurl)
+    rpos_obj = json.load(rpos)
+    answer = 'Longitude: '+str(j_obj['iss_position']['latitude'])+' Latitude: '+str(j_obj['iss_position']['longitude'])+'\nLocation name from OSM: '+rpos_obj['display_name']
 #    answer = j_obj
     return "NOW", '%s'%answer
 commands['now'] = nowHandler
