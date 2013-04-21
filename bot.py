@@ -8,6 +8,7 @@ http://xmpppy.sourceforge.net/examples/bot.py
 
 from init_env import USERNAME, PASSWORD, SERVER, PORT
 from init_env import WHITE_LIST_USERS
+from init_env import SMSUSERNAME, SMSPASSWORD, SMSSENDER
 
 import pdb
 import sys
@@ -66,10 +67,29 @@ def whenHandler(user, command, args, msg):
     return "WHEN", "%s"%answer
 commands['when'] = whenHandler
 
-i18n['en']['HOOK3'] = 'Responce 3: static string'
-def hook3Handler(user, command, args, msg):
-    return "HOOK3"*int(args)
-commands['hook3'] = hook3Handler
+i18n['en']['SMS'] = '%s'
+def smsHandler(user, command, args, msg):
+    # http://nominatim.openstreetmap.org/search?q=135+pilkington+avenue,+birmingham&format=json&polygon=0&addressdetails=1&limit=1&email=instantspot@ruecker.fi
+    url = 'http://nominatim.openstreetmap.org/search?q='+urllib.quote_plus(str(args))+'&format=json&polygon=0&addressdetails=1&limit=1&email=instantspot@ruecker.fi'
+    j = urllib2.urlopen(url)
+    j_obj = json.load(j)
+    #answer = 'Location request result (via OpenStreetMap and Nominatim): Latitude: '+str(j_obj[0]['lat'])+' Longitude: '+str(j_obj[0]['lon'])+' for: '+j_obj[0]['display_name']
+    passurl = 'http://api.open-notify.org/iss/?n=3&lat='+str(j_obj[0]['lat'])+'&lon='+str(j_obj[0]['lon'])
+    #+'alt=
+    passdata = urllib2.urlopen(passurl)
+    pass_obj = json.load(passdata)
+    #check for success here!
+    time_format = "%Y-%m-%dT%H:%M:%S%z"
+    answer = 'Next pass of the ISS for: '+j_obj[0]['display_name']
+    answer = answer+';'+time.strftime(time_format,time.gmtime(pass_obj['response'][0]['risetime']))+';for:'+str(pass_obj['response'][0]['duration'])+'s'
+    print(answer.encode('ascii', 'ignore'))
+    #https://www.voipdiscount.com/myaccount/sendsms.php?username=xxxxxxxxxx&password=xxxxxxxxxx&from=xxxxxxxxxx&to=xxxxxxxxxx&text=xxxxxxxxxx
+    answerurl = 'https://www.voipdiscount.com/myaccount/sendsms.php?username='+SMSUSERNAME+'&password='+SMSPASSWORD+'&from='+SMSSENDER+'&to='+'+358401620548'+'&text='+urllib.quote(answer.encode('ascii', 'ignore'))
+    sms_result = urllib2.urlopen(answerurl)
+    print(answerurl)
+    print(sms_result)
+    return "SMS", sms_result
+commands['sms'] = smsHandler
 
 def get_ip_hook(user, command, args, msg):
     # print '>>> get_ip_hook'
