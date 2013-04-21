@@ -34,18 +34,18 @@ def helpHandler(user, command, args, msg):
 commands['help'] = helpHandler
 
 i18n['en']['EMPTY'] = "%s"
-i18n['en']['NOW'] = '%s'
-def nowHandler(user, command, args, msg):
+i18n['en']['WHERE'] = '%s'
+def whereHandler(user, command, args, msg):
     j = urllib2.urlopen('http://api.open-notify.org/iss-now/')
     j_obj = json.load(j)
     #http://nominatim.openstreetmap.org/reverse?format=xml&lat=60&lon=42&email=instantspot@ruecker.fi
     rposurl = 'http://nominatim.openstreetmap.org/reverse?format=json&lat='+urllib.quote_plus(str(j_obj['iss_position']['latitude']))+'&lon='+urllib.quote_plus(str(j_obj['iss_position']['longitude']))+'&email=instantspot@ruecker.fi'
     rpos = urllib2.urlopen(rposurl)
     rpos_obj = json.load(rpos)
-    answer = 'Longitude: '+str(j_obj['iss_position']['latitude'])+' Latitude: '+str(j_obj['iss_position']['longitude'])+'\nLocation name from OSM: '+rpos_obj['display_name']
+    answer = 'Longitude: '+str(j_obj['iss_position']['latitude'])+' Latitude: '+str(j_obj['iss_position']['longitude'])#+'\nLocation name from OSM: '+rpos_obj['display_name']
 #    answer = j_obj
-    return "NOW", '%s'%answer
-commands['now'] = nowHandler
+    return "WHERE", '%s'%answer
+commands['where'] = nowHandler
 
 i18n['en']['WHEN'] = '%s'
 def whenHandler(user, command, args, msg):
@@ -85,12 +85,11 @@ def smsHandler(user, command, args, msg):
     time_format = "%Y-%m-%dT%H:%M:%S%z"
     answer = 'Next pass of the ISS for: '+j_obj[0]['display_name']
     answer = answer+';'+time.strftime(time_format,time.gmtime(pass_obj['response'][0]['risetime']))+';for:'+str(pass_obj['response'][0]['duration'])+'s'
-    print(answer.encode('ascii', 'ignore'))
+    #print(answer.encode('ascii', 'ignore'))
     #https://www.voipdiscount.com/myaccount/sendsms.php?username=xxxxxxxxxx&password=xxxxxxxxxx&from=xxxxxxxxxx&to=xxxxxxxxxx&text=xxxxxxxxxx
     answerurl = 'https://www.voipdiscount.com/myaccount/sendsms.php?username='+SMSUSERNAME+'&password='+SMSPASSWORD+'&from='+SMSSENDER+'&to='+smsreceiver+'&text='+urllib.quote(answer.encode('ascii', 'ignore'))
-    #FIXME temporarily disabled SMS sending
     sms_result = urllib2.urlopen(answerurl)
-    print(answerurl)
+    #print(answerurl)
     #print(sms_result)
     return "SMS", answerurl
 commands['sms'] = smsHandler
