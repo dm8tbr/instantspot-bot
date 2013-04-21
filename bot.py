@@ -45,7 +45,7 @@ def whereHandler(user, command, args, msg):
     answer = 'Longitude: '+str(j_obj['iss_position']['latitude'])+' Latitude: '+str(j_obj['iss_position']['longitude'])#+'\nLocation name from OSM: '+rpos_obj['display_name']
 #    answer = j_obj
     return "WHERE", '%s'%answer
-commands['where'] = nowHandler
+commands['where'] = whereHandler
 
 i18n['en']['WHEN'] = '%s'
 def whenHandler(user, command, args, msg):
