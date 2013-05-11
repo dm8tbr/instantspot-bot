@@ -43,7 +43,9 @@ def whereHandler(user, command, args, msg):
     rpos = urllib2.urlopen(rposurl)
     rpos_obj = json.load(rpos)
     answer = 'Longitude: '+str(j_obj['iss_position']['latitude'])+' Latitude: '+str(j_obj['iss_position']['longitude'])#+'\nLocation name from OSM: '+rpos_obj['display_name']
-#    answer = j_obj
+    if not (rpos_obj.has_key('error')):
+        answer = answer+'\nLocation name from OSM: '+rpos_obj['display_name']
+#   answer = rpos_obj
     return "WHERE", '%s'%answer
 commands['where'] = whereHandler
 
