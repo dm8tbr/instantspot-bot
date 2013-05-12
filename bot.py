@@ -36,31 +36,35 @@ commands['help'] = helpHandler
 i18n['en']['EMPTY'] = "%s"
 i18n['en']['WHERE'] = '%s'
 def whereHandler(user, command, args, msg):
+    # query API for current ISS position projected onto earth
     j = urllib2.urlopen('http://api.open-notify.org/iss-now/')
     j_obj = json.load(j)
-    #http://nominatim.openstreetmap.org/reverse?format=xml&lat=60&lon=42&email=instantspot@ruecker.fi
+    # query API for name of projected ISS position
+    # API format: http://nominatim.openstreetmap.org/reverse?format=xml&lat=60&lon=42&email=instantspot@ruecker.fi
     rposurl = 'http://nominatim.openstreetmap.org/reverse?format=json&lat='+urllib.quote_plus(str(j_obj['iss_position']['latitude']))+'&lon='+urllib.quote_plus(str(j_obj['iss_position']['longitude']))+'&email=instantspot@ruecker.fi'
     rpos = urllib2.urlopen(rposurl)
     rpos_obj = json.load(rpos)
+    # construct answer, only add name of location if query was successful
     answer = 'Longitude: '+str(j_obj['iss_position']['latitude'])+' Latitude: '+str(j_obj['iss_position']['longitude'])#+'\nLocation name from OSM: '+rpos_obj['display_name']
     if not (rpos_obj.has_key('error')):
         answer = answer+'\nLocation name from OSM: '+rpos_obj['display_name']
-#   answer = rpos_obj
     return "WHERE", '%s'%answer
 commands['where'] = whereHandler
 
 i18n['en']['WHEN'] = '%s'
 def whenHandler(user, command, args, msg):
-    # http://nominatim.openstreetmap.org/search?q=135+pilkington+avenue,+birmingham&format=json&polygon=0&addressdetails=1&limit=1&email=instantspot@ruecker.fi
+    # query API to resolve name of location to coordinates
+    # API format: http://nominatim.openstreetmap.org/search?q=135+pilkington+avenue,+birmingham&format=json&polygon=0&addressdetails=1&limit=1&email=instantspot@ruecker.fi
     url = 'http://nominatim.openstreetmap.org/search?q='+urllib.quote_plus(str(args))+'&format=json&polygon=0&addressdetails=1&limit=1&email=instantspot@ruecker.fi'
     j = urllib2.urlopen(url)
     j_obj = json.load(j)
-    #answer = 'Location request result (via OpenStreetMap and Nominatim): Latitude: '+str(j_obj[0]['lat'])+' Longitude: '+str(j_obj[0]['lon'])+' for: '+j_obj[0]['display_name']
+    # FIXME check if query was successful!
+    # query API for next passes above resolved coordinates
     passurl = 'http://api.open-notify.org/iss/?n=3&lat='+str(j_obj[0]['lat'])+'&lon='+str(j_obj[0]['lon'])
-    #+'alt=
+    # FIXME add altitude data somehow: +'alt='+
     passdata = urllib2.urlopen(passurl)
     pass_obj = json.load(passdata)
-    #check for success here!
+    # FIXME check if query was successful!
     time_format = "%Y-%m-%dT%H:%M:%S%z"
     answer = 'Next 3 passes of the ISS for:\n'+j_obj[0]['display_name']
     answer = answer+'\n1: '+time.strftime(time_format,time.gmtime(pass_obj['response'][0]['risetime']))+' for: '+str(pass_obj['response'][0]['duration'])+'s'
@@ -71,6 +75,9 @@ commands['when'] = whenHandler
 
 i18n['en']['SMS'] = '%s'
 def smsHandler(user, command, args, msg):
+    # This part is still very hacky, fix before use!
+    return "SMS", 'sorry!'
+
     args, smsreceiver = args.split('|', 1)
     print('smsreceiver: '+smsreceiver)
     print('args: '+args)
