@@ -58,13 +58,13 @@ def whenHandler(user, command, args, msg):
     url = 'http://nominatim.openstreetmap.org/search?q='+urllib.quote_plus(str(args))+'&format=json&polygon=0&addressdetails=1&limit=1&email=instantspot@ruecker.fi'
     j = urllib2.urlopen(url)
     j_obj = json.load(j)
-    # FIXME check if query was successful!
+    # FIXME check if query was successful! - seems to return [] if unsuccessful
     # query API for next passes above resolved coordinates
     passurl = 'http://api.open-notify.org/iss/?n=3&lat='+str(j_obj[0]['lat'])+'&lon='+str(j_obj[0]['lon'])
     # FIXME add altitude data somehow: +'alt='+
     passdata = urllib2.urlopen(passurl)
     pass_obj = json.load(passdata)
-    # FIXME check if query was successful!
+    # FIXME check if query was successful! - returns blank if unsuccessful
     time_format = "%Y-%m-%dT%H:%M:%S%z"
     answer = 'Next 3 passes of the ISS for:\n'+j_obj[0]['display_name']
     answer = answer+'\n1: '+time.strftime(time_format,time.gmtime(pass_obj['response'][0]['risetime']))+' for: '+str(pass_obj['response'][0]['duration'])+'s'
