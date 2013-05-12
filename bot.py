@@ -143,7 +143,7 @@ def message_callback(conn, msg):
             except KeyError:
                 try: reply = i18n['en'][reply]
                 except KeyError: pass
-        if reply: conn.send(xmpp.Message(msg.getFrom(), reply))
+        if reply: conn.send(xmpp.Message(msg.getFrom(), reply, 'chat' ))
 
 ############################# bot logic stop #####################################
 
